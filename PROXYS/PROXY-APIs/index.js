@@ -7,15 +7,11 @@ require('dotenv').config()
 //Settings
 const PORT = process.env.PORT || 2020;
 const HOST = process.env.HOST || '127.0.0.1';
+app.use(morgan('dev'));
 
 //URLs
 const API_SERVICE_URL = process.env.API_SERVICE_URL
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL
-
-//Middlewares
-app.use(express.urlencoded({extended: false}))
-app.use(express.json())
-app.use(morgan('dev'));
 
 //Routes
 app.get('/info', (req, res, next) => {
@@ -40,5 +36,9 @@ app.use('/auth', createProxyMiddleware({
         [`^/auth`]: '',
     },
 }))
+
+//Middlewares
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
 
 app.listen(PORT, HOST, () => console.log(`Proxy Running on http://${HOST}:${PORT}`))

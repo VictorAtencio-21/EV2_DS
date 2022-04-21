@@ -7,15 +7,12 @@ require('dotenv').config();
 //Settings
 const PORT = process.env.PORT || 2050;
 const HOST = process.env.HOST || '127.0.0.1';
+app.use(morgan('dev'));
 
 //URLs
 const DESKTOP = 'http://localhost:2030/'
 const MOBILE = 'http://localhost:2040/'
 
-//Middlewares
-app.use(express.urlencoded({extended: false}))
-app.use(express.json())
-app.use(morgan('dev'));
 
 //Routes
 app.get('/info', (req, res, next) => {
@@ -40,5 +37,9 @@ app.use('/mob', createProxyMiddleware({
         [`^/mob`]: '',
     },
 }))
+
+//Middlewares
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
 
 app.listen(PORT, HOST, () => console.log(`Proxy Running on http://${HOST}:${PORT}`))
