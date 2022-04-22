@@ -1,10 +1,19 @@
-FROM node:16
-ENV NODE_ENV=production
+FROM node:16-alpine
+
 ENV AUTH=http://localhost:2020/auth/
+
 ENV API=http://localhost:2020/cars/
-WORKDIR /usr/src/app
+
+WORKDIR /srv
+
 COPY package*.json ./
+
 RUN npm install 
+
 COPY . .
+
+ENV PORT=2040
+
 EXPOSE 2040
-CMD ["node", "bffmob.js"]
+
+CMD ["npm", "start"]

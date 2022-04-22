@@ -1,41 +1,73 @@
-version: '3.4'
+version: '3'
+
+networks:
+  mainnetwork:
+  driver: bridge
 
 services:
+
+ apiproxy:
+  container-name: proxyapis
+  build:
+    context: ./PROXYS/PROXY-APIs
+    dockerfile: ./PROXY/PROXY-APIs/Dockerfile
+    ports:
+      - 2020:2020
+    depends_on:
+      - api
+      - authapi
+    networks:
+      - network1
+  
+  bffproxy:
+    container-name: proxybff
+    build:
+      context: ./PROXYS/PROXY-BFFs
+      dockerfile: ./PROXYS/PROXY-BFFs/Dockerfile
+      ports:
+      - 2050:2050
+      depends_on:
+      - bffdesk
+      - bffmob
+      networks:
+      - network1
+
   api:
-    image: api
-    build:
-      context: ./APIs
-      dockerfile: ./APIs/API_Service/Dockerfile
-    environment:
-      NODE_ENV: production
-      MONGO_URI: mongodb://localhost/videogames
+    container-name: entitiesapi
+    build: ./APIs/API_Service
+    dockerfile: ./APIs/API_Service/Dockerfile
     ports:
-      - 3010:2010
+    - 2010:2010
+    networks:
+      - network1
+  
   authapi:
-    image: auth
-    build:
-      context: ./APIs
-      dockerfile: ./APIs/AuthService/Dockerfile
-    environment:
-      NODE_ENV: production
-      MONGO_URI: mongodb://localhost/users
+    container-name: authapi
+    build: ./APIs/AuthService
+    dockerfile: ./APIs/AuthService/Dockerfile
     ports:
-      - 3000:2000
-  bffmovil:
-    image: bffmob
-    build:
-      context: ./BFFs
-      dockerfile: ./BFFs/Mobile/Dockerfile
-    environment:
-      NODE_ENV: production
+    - 2000:2000
+    networks:
+      - network1 
+  
+  bffdesk:
+    container-name: deskbff
+    build: ./BFFs/Desktop
+    dockerfile: ./BFFs/Desktop/Dockerfile
+    depends_on:
+      - authapi
+      - api
     ports:
-      - 3040:2040
-  bffdesktop:
-    image: bffdesk
-    build:
-      context: ./BFFs
-      dockerfile: ./BFFs/Desktop/Dockerfile
-    environment:
-      NODE_ENV: production
+    - 2030:2030
+
+  bffmob:
+    container-name: mobbff
+    build: ./BFFs/Desktop
+    dockerfile: ./BFFs/Desktop/Dockerfile
+    depends_on:
+      - authapi
+      - api
     ports:
-      - 3030:2030
+    - 2030:2030
+    networks:
+      - network1    
