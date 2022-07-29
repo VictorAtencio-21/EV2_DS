@@ -1,4 +1,4 @@
-# EV2_Distributed_Systems
+# SISTEMAS DISTRIBUIDOS
 Evaluacion 2 para la materia Introduccion a sitemas distribuidos, 
 
 Como segunda evaluación, se ha de realizar una API compuesta de varios servicios distribuidos
